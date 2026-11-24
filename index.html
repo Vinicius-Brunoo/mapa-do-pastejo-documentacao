@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Guia visual e simples do projeto acadêmico DW3 — Pastejo Rotacionado.">
+  <title>Guia do Pastejo Rotacionado</title>
+  <style>
+    :root {
+      --bg: #07130e;
+      --surface: #0d1e16;
+      --surface-2: #13291e;
+      --line: #244333;
+      --text: #edf7f0;
+      --muted: #a9c1b1;
+      --green: #5fcb87;
+      --green-2: #a6e7ba;
+      --yellow: #e9c46a;
+      --blue: #78c6e6;
+      --danger: #ff9a8b;
+      --shadow: 0 18px 50px rgba(0, 0, 0, .24);
+      --radius: 18px;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 12% 0, rgba(95, 203, 135, .12), transparent 30rem),
+        radial-gradient(circle at 100% 18%, rgba(120, 198, 230, .08), transparent 28rem),
+        var(--bg);
+      color: var(--text);
+      font: 16px/1.65 var(--sans);
+    }
+
+    a { color: var(--green-2); text-underline-offset: .2em; }
+    a:hover { color: white; }
+    code { font-family: var(--mono); font-size: .9em; }
+    .container { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(95, 203, 135, .18);
+      background: rgba(7, 19, 14, .88);
+      backdrop-filter: blur(16px);
+    }
+
+    .topbar-inner {
+      min-height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; font-weight: 800; }
+    .brand-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--green); color: #05220f; }
+    nav { display: flex; gap: 18px; overflow-x: auto; }
+    nav a { flex: 0 0 auto; color: var(--muted); text-decoration: none; font-size: .88rem; font-weight: 700; }
+    nav a:hover, nav a.active { color: var(--green-2); }
+
+    .hero { padding: 88px 0 58px; }
+    .eyebrow { margin: 0 0 14px; color: var(--green); font-size: .78rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+    h1 { max-width: 850px; margin: 0; font-size: clamp(2.7rem, 8vw, 5.8rem); line-height: .98; letter-spacing: -.055em; }
+    .hero-text { max-width: 760px; margin: 25px 0 0; color: var(--muted); font-size: clamp(1.05rem, 2.2vw, 1.28rem); }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .button { display: inline-flex; align-items: center; gap: 8px; padding: 11px 17px; border: 1px solid var(--line); border-radius: 12px; color: white; text-decoration: none; font-weight: 800; background: var(--surface); }
+    .button.primary { border-color: var(--green); background: var(--green); color: #05220f; }
+    .button:hover { transform: translateY(-1px); }
+
+    .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 42px; }
+    .quick-card { min-height: 115px; padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(145deg, rgba(19, 41, 30, .92), rgba(13, 30, 22, .75)); box-shadow: var(--shadow); }
+    .quick-card strong { display: block; color: var(--green-2); font-size: 1.55rem; }
+    .quick-card span { color: var(--muted); font-size: .9rem; }
+
+    section { padding: 62px 0; scroll-margin-top: 72px; }
+    section + section { border-top: 1px solid rgba(36, 67, 51, .65); }
+    .section-heading { display: grid; grid-template-columns: 1fr 1.4fr; gap: 44px; align-items: end; margin-bottom: 30px; }
+    .section-heading h2 { margin: 0; font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.05; letter-spacing: -.04em; }
+    .section-heading p { margin: 0; color: var(--muted); }
+
+    .panel { padding: 26px; border: 1px solid var(--line); border-radius: var(--radius); background: rgba(13, 30, 22, .86); box-shadow: var(--shadow); }
+    .panel h3 { margin: 0 0 10px; font-size: 1.18rem; }
+    .panel p:last-child { margin-bottom: 0; }
+    .muted { color: var(--muted); }
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .number { display: grid; place-items: center; width: 34px; height: 34px; margin-bottom: 15px; border-radius: 50%; background: var(--surface-2); color: var(--green-2); font: 800 .9rem/1 var(--mono); }
+
+    .flow { display: grid; grid-template-columns: repeat(7, auto); justify-content: center; align-items: center; gap: 12px; overflow-x: auto; padding: 34px 20px; }
+    .flow-node { min-width: 132px; padding: 16px; border: 1px solid var(--line); border-radius: 14px; text-align: center; background: var(--surface-2); }
+    .flow-node b { display: block; color: var(--green-2); }
+    .flow-node small { color: var(--muted); }
+    .arrow { color: var(--yellow); font-size: 1.4rem; }
+
+    .schema { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .table-card { overflow: hidden; border: 1px solid var(--line); border-radius: 15px; background: var(--surface); }
+    .table-card h3 { margin: 0; padding: 15px 17px; color: #072013; background: var(--green); font-size: 1rem; }
+    .table-card ul { margin: 0; padding: 13px 17px 16px; list-style: none; }
+    .table-card li { padding: 5px 0; color: var(--muted); font-family: var(--mono); font-size: .83rem; }
+    .table-card li strong { color: var(--yellow); }
+    .relation { margin-top: 16px; padding: 16px 20px; border-left: 3px solid var(--yellow); border-radius: 0 12px 12px 0; background: rgba(233, 196, 106, .08); color: var(--muted); }
+
+    .code { overflow-x: auto; margin: 16px 0 0; padding: 18px; border: 1px solid #203b2d; border-radius: 13px; background: #06100b; color: #d7eadc; font: .84rem/1.7 var(--mono); }
+    .code .key { color: var(--yellow); }
+    .code .value { color: var(--blue); }
+
+    .api-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+    table { width: 100%; border-collapse: collapse; min-width: 780px; background: rgba(13, 30, 22, .72); }
+    th, td { padding: 13px 15px; border-bottom: 1px solid var(--line); text-align: left; }
+    th { color: var(--green-2); background: var(--surface-2); font-size: .78rem; letter-spacing: .07em; text-transform: uppercase; }
+    td { color: var(--muted); font-size: .9rem; }
+    tr:last-child td { border-bottom: 0; }
+    .method { display: inline-block; min-width: 58px; padding: 3px 7px; border-radius: 7px; color: #06150d; text-align: center; font: 900 .72rem var(--mono); }
+    .get { background: var(--blue); }
+    .post { background: var(--green); }
+    .put { background: var(--yellow); }
+    .delete { background: var(--danger); }
+
+    .steps { counter-reset: steps; display: grid; gap: 12px; }
+    .step { position: relative; padding: 19px 20px 19px 62px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+    .step::before { counter-increment: steps; content: counter(steps); position: absolute; left: 18px; top: 17px; display: grid; place-items: center; width: 29px; height: 29px; border-radius: 9px; background: var(--green); color: #05220f; font-weight: 900; }
+    .step b { color: var(--green-2); }
+
+    .checklist { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .check { display: flex; gap: 11px; align-items: flex-start; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); cursor: pointer; }
+    .check input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--green); }
+    #progress { margin: 0 0 16px; color: var(--green-2); font-weight: 800; }
+
+    .notice { margin-top: 18px; padding: 17px 19px; border: 1px solid rgba(233, 196, 106, .42); border-radius: 13px; color: #eadfbf; background: rgba(233, 196, 106, .07); }
+    footer { padding: 36px 0 50px; border-top: 1px solid var(--line); color: var(--muted); font-size: .88rem; }
+    footer .container { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+
+    @media (max-width: 900px) {
+      .quick-grid, .schema { grid-template-columns: repeat(2, 1fr); }
+      .cards { grid-template-columns: 1fr; }
+      .section-heading { grid-template-columns: 1fr; gap: 12px; }
+      nav { display: none; }
+    }
+
+    @media (max-width: 580px) {
+      .hero { padding-top: 58px; }
+      .quick-grid, .schema, .checklist { grid-template-columns: 1fr; }
+      .panel { padding: 20px; }
+      .flow { justify-content: start; }
+    }
+
+    @media print {
+      :root { --bg: white; --surface: #fff; --surface-2: #eef7f0; --text: #102217; --muted: #3e5546; --line: #b8cbbb; --shadow: none; }
+      body { background: white; }
+      .topbar, .actions { display: none; }
+      section { break-inside: avoid; padding: 28px 0; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="#inicio"><span class="brand-mark">P</span><span>Guia do Pastejo</span></a>
+      <nav aria-label="Navegação principal">
+        <a href="#arquitetura">Arquitetura</a>
+        <a href="#banco">Banco</a>
+        <a href="#api">API</a>
+        <a href="#frontend">Front-end</a>
+        <a href="#docker">Docker</a>
+        <a href="#apresentacao">Apresentação</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="inicio">
+    <div class="container hero">
+      <p class="eyebrow">Desenvolvimento Web III · Trabalho acadêmico</p>
+      <h1>Pastejo rotacionado, explicado sem complicação.</h1>
+      <p class="hero-text">Um mapa rápido do sistema: o que cada pasta faz, como os dados percorrem o front-end e a API, como as tabelas se relacionam e onde entram JWT, soft delete e Docker.</p>
+      <div class="actions">
+        <a class="button primary" href="#arquitetura">Começar pelo fluxo →</a>
+        <a class="button" href="https://github.com/Vinicius-Brunoo/dw3-trabalho3-pastejo">Ver código no GitHub</a>
+      </div>
+      <div class="quick-grid" aria-label="Resumo do projeto">
+        <div class="quick-card"><strong>4</strong><span>módulos relacionados</span></div>
+        <div class="quick-card"><strong>20</strong><span>APIs de CRUD</span></div>
+        <div class="quick-card"><strong>2</strong><span>servidores Express</span></div>
+        <div class="quick-card"><strong>3</strong><span>containers Docker</span></div>
+      </div>
+    </div>
+
+    <section id="arquitetura">
+      <div class="container">
+        <div class="section-heading">
+          <div><p class="eyebrow">01 · Visão geral</p><h2>Como as partes conversam</h2></div>
+          <p>O navegador nunca acessa o PostgreSQL diretamente. Ele chama a API, a API consulta o banco e devolve JSON.</p>
+        </div>
+        <div class="panel flow" aria-label="Fluxo da aplicação">
+          <div class="flow-node"><b>Navegador</b><small>Nunjucks + JS</small></div><span class="arrow">→</span>
+          <div class="flow-node"><b>API</b><small>Express :40003</small></div><span class="arrow">→</span>
+          <div class="flow-node"><b>Model</b><small>consultas SQL</small></div><span class="arrow">→</span>
+          <div class="flow-node"><b>PostgreSQL</b><small>dados</small></div>
+        </div>
+        <div class="cards" style="margin-top:14px">
+          <article class="panel"><span class="number">V</span><h3>View</h3><p class="muted">Templates em <code>dw3frontend/views</code> e JavaScript em <code>dw3frontend/public/js</code>.</p></article>
+          <article class="panel"><span class="number">C</span><h3>Controller</h3><p class="muted">Recebe <code>req</code>, chama o model e monta a resposta JSON para o navegador.</p></article>
+          <article class="panel"><span class="number">M</span><h3>Model</h3><p class="muted">Executa consultas parametrizadas no PostgreSQL e retorna os registros.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="banco">
+      <div class="container">
+        <div class="section-heading">
+          <div><p class="eyebrow">02 · Banco de dados</p><h2>Quatro tabelas de negócio</h2></div>
+          <p>A tabela <code>usuarios</code> serve ao login e não entra na contagem. Todas possuem o campo <code>removido</code> para a exclusão lógica.</p>
+        </div>
+        <div class="schema">
+          <article class="table-card"><h3>pasto</h3><ul><li><strong>PK</strong> pastoid</li><li>descricao</li><li>areatotal</li><li>removido</li></ul></article>
+          <article class="table-card"><h3>piquete</h3><ul><li><strong>PK</strong> piqueteid</li><li>descricao</li><li>latitude / longitude</li><li><strong>FK</strong> pastoidfk</li><li>removido</li></ul></article>
+          <article class="table-card"><h3>animal</h3><ul><li><strong>PK</strong> animalid</li><li>nome</li><li>datanasc</li><li>removido</li></ul></article>
+          <article class="table-card"><h3>alocado</h3><ul><li><strong>PK</strong> alocadoid</li><li><strong>FK</strong> animalidifk</li><li><strong>FK</strong> piqueteidfk</li><li>datainicio / datafinal</li><li>removido</li></ul></article>
+        </div>
+        <div class="relation"><strong>Relacionamentos:</strong> um pasto possui vários piquetes; animais e piquetes se relacionam por meio do histórico de alocações.</div>
+        <div class="cards" style="margin-top:14px">
+          <article class="panel"><h3>Exclusão lógica</h3><p class="muted">O DELETE executa um UPDATE: <code>removido = true</code>. Os dados continuam no banco, mas deixam de aparecer nas consultas.</p></article>
+          <article class="panel"><h3>Tipos pedidos</h3><p class="muted"><code>VARCHAR</code> para textos, <code>NUMERIC</code> para área e coordenadas, e <code>DATE</code> para datas.</p></article>
+          <article class="panel"><h3>Login acadêmico</h3><p class="muted">A base inicial cria <code>admin / admin</code>. A senha simples foi mantida apenas para a demonstração acadêmica.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="api">
+      <div class="container">
+        <div class="section-heading">
+          <div><p class="eyebrow">03 · Back-end</p><h2>As 20 APIs obrigatórias</h2></div>
+          <p>Cada módulo possui as cinco operações pedidas. Todas as rotas de dados passam pelo middleware <code>AutenticaJWT</code>.</p>
+        </div>
+        <div class="api-wrap">
+          <table>
+            <thead><tr><th>Módulo</th><th>Listar</th><th>Buscar por ID</th><th>Inserir</th><th>Atualizar</th><th>Excluir</th></tr></thead>
+            <tbody>
+              <tr><td>Pastos</td><td><span class="method get">GET</span> getAllPastos</td><td><span class="method get">GET</span> getPastoByID</td><td><span class="method post">POST</span> insertPasto</td><td><span class="method put">PUT</span> updatePasto</td><td><span class="method delete">DELETE</span> deletePasto</td></tr>
+              <tr><td>Piquetes</td><td><span class="method get">GET</span> getAllPiquetes</td><td><span class="method get">GET</span> getPiqueteByID</td><td><span class="method post">POST</span> insertPiquete</td><td><span class="method put">PUT</span> updatePiquete</td><td><span class="method delete">DELETE</span> deletePiquete</td></tr>
+              <tr><td>Animais</td><td><span class="method get">GET</span> getAllAnimais</td><td><span class="method get">GET</span> getAnimalByID</td><td><span class="method post">POST</span> insertAnimal</td><td><span class="method put">PUT</span> updateAnimal</td><td><span class="method delete">DELETE</span> deleteAnimal</td></tr>
+              <tr><td>Alocados</td><td><span class="method get">GET</span> getAllAlocados</td><td><span class="method get">GET</span> getAlocadoByID</td><td><span class="method post">POST</span> insertAlocado</td><td><span class="method put">PUT</span> updateAlocado</td><td><span class="method delete">DELETE</span> deleteAlocado</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cards" style="margin-top:14px">
+          <article class="panel"><h3>Login</h3><p class="muted"><code>POST /Login</code> consulta o usuário. Se a senha estiver correta, o back-end cria um JWT válido por dez minutos.</p></article>
+          <article class="panel"><h3>JWT</h3><p class="muted">O front envia <code>Authorization: Bearer TOKEN</code>. Sem token válido, o controller do CRUD não é executado.</p></article>
+          <article class="panel"><h3>Código simples</h3><p class="muted">O controller só lê os dados, chama o model e responde. O projeto não adiciona tratamento global de erros.</p></article>
+        </div>
+        <pre class="code"><span class="key">routerApp.put</span>(<span class="value">"/updatePasto/:pastoid"</span>,
+  appLogin.AutenticaJWT,
+  appPastos.UpdatePasto
+);</pre>
+      </div>
+    </section>
+
+    <section id="frontend">
+      <div class="container">
+        <div class="section-heading">
+          <div><p class="eyebrow">04 · Front-end</p><h2>Uma função para cada API</h2></div>
+          <p>O servidor do front roda na porta 40103. As views Nunjucks montam as páginas e os arquivos JavaScript usam <code>fetch</code> para conversar com a API.</p>
+        </div>
+        <div class="steps">
+          <div class="step"><b>Login:</b> o usuário informa nome e senha; o navegador chama <code>POST /Login</code>.</div>
+          <div class="step"><b>Armazenamento:</b> após o login, o JWT é salvo no <code>localStorage</code>.</div>
+          <div class="step"><b>Listagem:</b> a tela chama uma rota <code>getAll...</code> e monta a tabela.</div>
+          <div class="step"><b>Formulário:</b> os modos inserir, editar e excluir chamam POST, PUT e DELETE.</div>
+          <div class="step"><b>Relacionamentos:</b> piquete carrega pastos; alocação carrega animais e piquetes para os campos de seleção.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="docker">
+      <div class="container">
+        <div class="section-heading">
+          <div><p class="eyebrow">05 · Execução</p><h2>Três serviços no Docker</h2></div>
+          <p>O Compose inicia PostgreSQL, back-end e front-end. O banco recebe o SQL inicial somente quando o volume é criado.</p>
+        </div>
+        <div class="cards">
+          <article class="panel"><span class="number">1</span><h3>banco</h3><p class="muted">PostgreSQL 16, banco <code>dw3_pastejo</code> e volume <code>pastejo_dados</code>.</p></article>
+          <article class="panel"><span class="number">2</span><h3>backend</h3><p class="muted">Node + Express na porta <code>40003</code>. Aguarda o healthcheck do PostgreSQL.</p></article>
+          <article class="panel"><span class="number">3</span><h3>frontend</h3><p class="muted">Express + Nunjucks na porta <code>40103</code>. O navegador acessa a API pela porta 40003.</p></article>
+        </div>
+        <pre class="code"><span class="key"># primeira execução</span>
+cp .env.example .env
+docker compose up --build -d
+
+<span class="key"># abrir no navegador</span>
+http://localhost:<span class="value">40103</span>
+
+<span class="key"># parar sem apagar os dados</span>
+docker compose down</pre>
+      </div>
+    </section>
+
+    <section id="apresentacao">
+      <div class="container">
+        <div class="section-heading">
+          <div><p class="eyebrow">06 · Seminário</p><h2>Checklist da apresentação</h2></div>
+          <p>Marque os itens durante o ensaio. O progresso fica salvo somente neste navegador.</p>
+        </div>
+        <p id="progress" aria-live="polite">0 de 10 itens conferidos</p>
+        <div class="checklist">
+          <label class="check"><input type="checkbox"><span>Mostrar os três containers com <code>docker compose ps</code>.</span></label>
+          <label class="check"><input type="checkbox"><span>Explicar front-end, API e PostgreSQL em portas separadas.</span></label>
+          <label class="check"><input type="checkbox"><span>Fazer login e mostrar o JWT no Local Storage.</span></label>
+          <label class="check"><input type="checkbox"><span>Cadastrar um pasto e um animal.</span></label>
+          <label class="check"><input type="checkbox"><span>Cadastrar um piquete relacionado ao pasto.</span></label>
+          <label class="check"><input type="checkbox"><span>Criar uma alocação ligando animal e piquete.</span></label>
+          <label class="check"><input type="checkbox"><span>Editar pelo menos um registro.</span></label>
+          <label class="check"><input type="checkbox"><span>Demonstrar o soft delete.</span></label>
+          <label class="check"><input type="checkbox"><span>Mostrar router, controller e model de um módulo.</span></label>
+          <label class="check"><input type="checkbox"><span>Manter a apresentação entre 10 e 15 minutos.</span></label>
+        </div>
+        <div class="notice"><strong>Importante:</strong> este guia descreve a versão acadêmica e simplificada. A senha <code>admin/admin</code> e a ausência de tratamento detalhado de erros não devem ser usadas como padrão em um sistema real.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <span>Guia do projeto <a href="https://github.com/Vinicius-Brunoo/dw3-trabalho3-pastejo">DW3 — Pastejo Rotacionado</a>.</span>
+      <span>Ideia de página-guia inspirada em <a href="https://github.com/ArielAio/mapa-do-pastejo">ArielAio/mapa-do-pastejo</a>.</span>
+    </div>
+  </footer>
+
+  <script>
+    const links = [...document.querySelectorAll('nav a')];
+    const sections = [...document.querySelectorAll('main section')];
+    const boxes = [...document.querySelectorAll('.check input')];
+    const progress = document.getElementById('progress');
+    const storageKey = 'guia-pastejo-checklist';
+
+    function updateProgress() {
+      const checked = boxes.filter(box => box.checked).length;
+      progress.textContent = checked + ' de ' + boxes.length + ' itens conferidos';
+      localStorage.setItem(storageKey, JSON.stringify(boxes.map(box => box.checked)));
+    }
+
+    try {
+      const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      boxes.forEach((box, index) => box.checked = Boolean(saved[index]));
+    } catch (_) {}
+
+    boxes.forEach(box => box.addEventListener('change', updateProgress));
+    updateProgress();
+
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      links.forEach(link => link.classList.toggle('active', link.hash === '#' + visible.target.id));
+    }, { rootMargin: '-25% 0px -65%', threshold: [0, .25, .5] });
+
+    sections.forEach(section => observer.observe(section));
+  </script>
+</body>
+</html>
