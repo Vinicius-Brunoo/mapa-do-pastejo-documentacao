@@ -158,11 +158,12 @@ SERVIDOR DO FRONT · localhost:40103 · dw3frontend/
 </article>
 <article>
 <h3>Usuário acadêmico</h3>
-<p>A base cria uma conta simples para a apresentação. Não há extensão, criptografia ou hash de senha.</p>
+<p>A base cria uma conta para a apresentação e salva somente o hash da senha. A extensão <code>pgcrypto</code> gera o hash bcrypt durante a inicialização.</p>
 <figure>
-<figcaption><a href="https://github.com/Vinicius-Brunoo/dw3-trabalho3-pastejo/blob/4fac04a/dw3backend/databaseConfig.sql#L1-L9">dw3backend/databaseConfig.sql:1–9</a></figcaption>
-<pre tabindex="0"><code style="counter-reset: line 0"><span class="line"><span class="ln"></span>CREATE TABLE IF NOT EXISTS usuarios (</span><span class="line"><span class="ln"></span>    usuarioid BIGSERIAL PRIMARY KEY,</span><span class="line"><span class="ln"></span>    username VARCHAR(50) NOT NULL UNIQUE,</span><span class="line key"><span class="ln"></span>    password VARCHAR(50) NOT NULL,</span><span class="line"><span class="ln"></span>    removido BOOLEAN NOT NULL DEFAULT false</span><span class="line"><span class="ln"></span>);</span><span class="line"><span class="ln"></span></span><span class="line"><span class="ln"></span>INSERT INTO usuarios (username, password)</span><span class="line key"><span class="ln"></span>VALUES ('admin', 'admin');</span></code></pre>
+<figcaption><a href="https://github.com/Vinicius-Brunoo/dw3-trabalho3-pastejo/blob/main/dw3backend/databaseConfig.sql#L1-L11">dw3backend/databaseConfig.sql:1–11</a></figcaption>
+<pre tabindex="0"><code style="counter-reset: line 0"><span class="line key"><span class="ln"></span>CREATE EXTENSION IF NOT EXISTS pgcrypto;</span><span class="line"><span class="ln"></span></span><span class="line"><span class="ln"></span>CREATE TABLE IF NOT EXISTS usuarios (</span><span class="line"><span class="ln"></span>    usuarioid BIGSERIAL PRIMARY KEY,</span><span class="line"><span class="ln"></span>    username VARCHAR(50) NOT NULL UNIQUE,</span><span class="line key"><span class="ln"></span>    password TEXT NOT NULL,</span><span class="line"><span class="ln"></span>    removido BOOLEAN NOT NULL DEFAULT false</span><span class="line"><span class="ln"></span>);</span><span class="line"><span class="ln"></span></span><span class="line"><span class="ln"></span>INSERT INTO usuarios (username, password)</span><span class="line key"><span class="ln"></span>VALUES ('admin', crypt('admin', gen_salt('bf')));</span></code></pre>
 </figure>
+<p class="talk"><strong>Em aula</strong> A senha original não fica gravada. O login usa <code>bcryptjs</code> para comparar a senha digitada com o hash.</p>
 </article>
 <article>
 <h3>Exclusão lógica</h3>
@@ -186,8 +187,8 @@ SELECT * FROM pasto WHERE removido = false;</code></pre>
 </article>
 <article>
 <h3>Login e JWT</h3>
-<p>O login compara diretamente a senha informada com a senha acadêmica do banco. Quando coincide, cria um JWT válido por dez minutos.</p>
-<pre class="plain"><code>if (req.body.password === credencial[0].password) {
+<p>O login usa <code>bcryptjs</code> para comparar a senha informada com o hash do banco. Quando coincide, cria um JWT válido por dez minutos.</p>
+<pre class="plain"><code>if (bCrypt.compareSync(req.body.password, credencial[0].password)) {
     const token = jwt.sign({ username }, process.env.SECRET_API,
         { expiresIn: 600 });
     return res.json({ auth: true, token: token });
@@ -327,7 +328,7 @@ docker compose down</code></pre>
 <h2 class="sr-only" id="titulo-limites">Limitações</h2>
 <p class="intro">O projeto foi mantido propositalmente simples para a disciplina.</p>
 <dl>
-<div><dt>Senha acadêmica</dt><dd><code>admin / admin</code> fica em texto simples. Serve somente à demonstração local.</dd></div>
+<div><dt>Senha acadêmica</dt><dd>O acesso continua sendo <code>admin / admin</code>, mas o PostgreSQL armazena apenas o hash bcrypt.</dd></div>
 <div><dt>Tratamento de erros</dt><dd>Não existe middleware próprio. O trabalho considera o caminho de uso correto.</dd></div>
 <div><dt>Validações</dt><dd>Os controllers não possuem validações avançadas. Os formulários enviam os campos esperados.</dd></div>
 <div><dt>Exclusão</dt><dd>Os registros não são apagados fisicamente; recebem <code>removido = true</code>.</dd></div>
